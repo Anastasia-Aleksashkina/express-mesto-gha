@@ -4,8 +4,8 @@ const User = require('../models/userSchema');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send(user))
-    .catch((err) => {
-      res.status(500).send({ message: 'На сервере произошла ошибка.', err });
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка.' });
     });
 };
 
@@ -16,9 +16,9 @@ module.exports.postUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при создании пользователя. ', err });
+        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при создании пользователя. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -31,9 +31,9 @@ module.exports.getUser = (req, res) => {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден. ' });
       }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ', err });
+        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -48,12 +48,12 @@ module.exports.updateNameUser = (req, res) => {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден. ' });
       }
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при обновлении профиля. ', err });
+        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при обновлении профиля. ' });
       }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ', err });
+        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -68,11 +68,11 @@ module.exports.updateAvatarUser = (req, res) => {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден. ' });
       }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ', err });
+        return res.status(400).send({ message: 'Передан не корректный _id пользователя. ' });
       }
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при обновлении аватара. ', err });
+        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при обновлении аватара. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };

@@ -5,8 +5,8 @@ const Card = require('../models/cardSchema');
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((card) => res.send(card))
-    .catch((err) => {
-      res.status(500).send({ message: 'На сервере произошла ошибка.', err });
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка.' });
     });
 };
 
@@ -18,9 +18,9 @@ module.exports.postCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при создании карточки. ', err });
+        return res.status(400).send({ message: 'Ошибка валидации. Переданы некорректные данные при создании карточки. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -35,9 +35,9 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Не корректный _id карточки. ', err });
+        return res.status(400).send({ message: 'Не корректный _id карточки. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -54,9 +54,9 @@ module.exports.putLike = (req, res) => {
         return res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
       }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка. ', err });
+        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
 
@@ -73,8 +73,8 @@ module.exports.deleteLike = (req, res) => {
         return res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
       }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка. ', err });
+        return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка. ' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка. ', err });
+      return res.status(500).send({ message: 'На сервере произошла ошибка. ' });
     });
 };
