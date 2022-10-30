@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const cardsRouter = require('./routes/cardsRouter');
 const usersRouter = require('./routes/usersRouter');
 const { login, postUser } = require('./controllers/userController');
@@ -12,14 +13,6 @@ const app = express();
 app.use(express.json());
 mongoose.connect(MONGO_URL);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '634d4aaa8206df95c28493f2',
-//   };
-
-//   next();
-// });
-
 app.post('/signin', loginValid, login);
 app.post('/signup', userValid, postUser);
 app.use(auth);
@@ -29,8 +22,15 @@ app.use('/cards', require('./routes/cardsRouter'));
 app.use(cardsRouter);
 app.use(usersRouter);
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден.' });
+app.use(errors());
+app.use((err, req, res, next) => {
+  console.log(err);
+  const { statusCode = 500, message } = err;
+
+  res.status(statusCode).send({
+    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+  });
+  return next();
 });
 
 app.listen(PORT, () => {
