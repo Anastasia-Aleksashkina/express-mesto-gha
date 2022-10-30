@@ -8,11 +8,11 @@ const {
   updateAvatarUser,
 } = require('../controllers/userController');
 
-usersRouter.get('/users', getUsers);
-usersRouter.get('/users/me', getUser);
-usersRouter.post('/users', postUser);
-usersRouter.get('/users/:userId', idValid, getUser);
-usersRouter.patch('/users/me', userProfileValid, updateNameUser);
-usersRouter.patch('/users/me/avatar', userAvatarValid, updateAvatarUser);
+usersRouter.get('/', getUsers);
+usersRouter.get('/me', getUser);
+usersRouter.post('/', postUser);
+usersRouter.get('/:userId', idValid, getUser);
+usersRouter.patch('/me', userProfileValid, updateNameUser);
+usersRouter.patch('/me/avatar', userAvatarValid, updateAvatarUser);
 
 module.exports = usersRouter;

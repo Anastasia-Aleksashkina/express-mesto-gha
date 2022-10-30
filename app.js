@@ -1,8 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-const cardsRouter = require('./routes/cardsRouter');
-const usersRouter = require('./routes/usersRouter');
 const { login, postUser } = require('./controllers/userController');
 const { loginValid, userValid } = require('./middlewares/validation');
 const auth = require('./middlewares/auth');
@@ -18,9 +16,6 @@ app.post('/signup', userValid, postUser);
 app.use(auth);
 app.use('/users', require('./routes/usersRouter'));
 app.use('/cards', require('./routes/cardsRouter'));
-
-app.use(cardsRouter);
-app.use(usersRouter);
 
 app.use(errors());
 app.use((err, req, res, next) => {

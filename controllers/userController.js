@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userSchema');
-const { MONGO_DB_CODE } = require('../utils/constants');
+const { MONGO_DB_CODE, JWT_SECRET } = require('../utils/constants');
 const BadRequestError = require('../utils/Errors/BadRequestError'); // 400
 const NotFoundError = require('../utils/Errors/NotFoundError'); // 404
 const ConflictError = require('../utils/Errors/ConflictError'); // 409
@@ -23,9 +23,9 @@ module.exports.postUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
+    .then((user) => User.findById(user._id))
     .then((user) => res.send(user))
     .catch((err) => {
-      console.log(err);
       if (err.code === MONGO_DB_CODE) {
         return next(new ConflictError('Пользователь с таким email уже существует. '));
       }
@@ -96,16 +96,10 @@ module.exports.login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        'super-strong-secret',
-        { expiresIn: '7d' },
-      );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      })
-        .send({ message: 'Авторизация прошла успешно. ', token });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      res
+        .cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
+        .send({ message: 'Авторизация прошла успешно. ' });
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') {
