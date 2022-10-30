@@ -26,12 +26,13 @@ module.exports.postCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
+    .orFail(() => res.status(404).send({ message: 'Карточка не найдена. ' }))
     .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена. ' });
+      if (card.owner.cardId.toString() === req.user._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((cardDelete) => res.send(cardDelete));
       }
-      Card.findByIdAndRemove(req.params.cardId)
-        .then((cardDelete) => res.send(cardDelete));
+      return res.status(403).send({ message: 'Недостаточно прав для удаления карточки. ' });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
