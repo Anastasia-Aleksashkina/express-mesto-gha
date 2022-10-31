@@ -33,7 +33,7 @@ module.exports.userAvatarValid = celebrate({
 
 module.exports.idValid = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().length(24).hex(),
+    userId: Joi.string().length(24).hex(),
   }),
 });
 

@@ -3,13 +3,14 @@ const { JWT_SECRET } = require('../utils/constants');
 const UnauthError = require('../utils/Errors/UnauthError');
 
 module.exports = (req, res, next) => {
-  let payload;
-  const { cookie } = req.headers;
-  const token = cookie.replace('jwt=', '');
+  const { authorization } = req.headers;
 
-  if (!token) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new UnauthError('Необходима авторизация'));
   }
+
+  const token = authorization.replace('Bearer ', '');
+  let payload;
 
   try {
     payload = jwt.verify(token, JWT_SECRET);
