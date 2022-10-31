@@ -7,6 +7,7 @@ const { login, postUser } = require('./controllers/userController');
 const { loginValid, userValid } = require('./middlewares/validation');
 const auth = require('./middlewares/auth');
 const errorsHandler = require('./middlewares/errorsHandler');
+const { NotFoundError } = require('./utils/Errors/NotFoundError');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -26,6 +27,9 @@ app.use('/users', require('./routes/usersRouter'));
 app.use('/cards', require('./routes/cardsRouter'));
 
 app.use(errors());
+app.use((req, res, next) => {
+  next(new NotFoundError('Маршрут не найден. '));
+});
 app.use(errorsHandler);
 
 app.listen(PORT, () => {
