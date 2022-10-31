@@ -31,9 +31,15 @@ module.exports.userAvatarValid = celebrate({
   }),
 });
 
-module.exports.idValid = celebrate({
+module.exports.idUserValid = celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).hex(),
+  }),
+});
+
+module.exports.idCardValid = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().length(24).hex(),
   }),
 });
 
