@@ -23,6 +23,9 @@ mongoose.connect(MONGO_URL, {
 app.post('/signin', loginValid, login);
 app.post('/signup', userValid, postUser);
 app.use(auth);
+app.get('/signout', (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Выход' });
+});
 app.use('/users', require('./routes/usersRouter'));
 app.use('/cards', require('./routes/cardsRouter'));
 
