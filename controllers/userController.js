@@ -1,11 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userSchema');
-const { MONGO_DB_CODE, JWT_SECRET } = require('../utils/constants');
+const { MONGO_DB_CODE } = require('../utils/constants');
 const BadRequestError = require('../utils/Errors/BadRequestError'); // 400
 const NotFoundError = require('../utils/Errors/NotFoundError'); // 404
 const ConflictError = require('../utils/Errors/ConflictError'); // 409
 const UnauthError = require('../utils/Errors/UnauthError'); // 401
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -96,9 +98,11 @@ module.exports.login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
       res
-        .cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'None', secure: true,
+        })
         .send({ message: 'Авторизация прошла успешно. ' });
     })
     .catch((err) => {
@@ -107,4 +111,8 @@ module.exports.login = (req, res, next) => {
       }
       return next(err);
     });
+};
+
+module.exports.logout = (req, res) => {
+  res.clearCookie('jwt', { secure: 'true', sameSite: 'none' }).send();
 };
